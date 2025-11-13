@@ -1,0 +1,127 @@
+Author: Princewill Nwokeke
+
+The HP CMSL is a bundle of PowerShell modules created by HP for the purpose of managing HP firmware and drivers from the command line. HP recently released the latest Client Management Script Library modules to the PowerShell gallery.
+
+
+Client Management Script Library is supported on 64-bit PowerShell 5.1 and higher. CMSL supports Windows 10 version 1809 and higher, and Windows 11.
+
+For download click here 
+CMSL has a module for supporting displays
+
+DISPLAY
+To run CMSL you must install it, us the link above to download and install it.
+Steps 1 : Install CMSL library
+Step 2: Open PowerShell
+Step 3: Run the functions: 
+Function	Description
+Get-HPDisplay	Retrieves features supported on connected displays
+Set-HPDisplay	Sets features supported on connected displays
+Update-HPDisplayFirmware	Updates firmware on connected displays if available
+
+Currently these are the functionality that are available.
+
+Get-HPDisplay  function, when ran grabs information about the OSD settings like in this picture below. This is easy because the command itself retrieves most of the OSD settings.
+
+ However it also takes a parameter and grabs only specified monitor information, if you have multiple monitors connected, If not specified, information for all displays will be returned.
+
+Get-HPDisplay -SerialNumber "MonitorSerialNumber"
+
+
+
+
+To grab the information for multiple monitors you can run 
+
+Get-HPDisplay -SerialNumber "MonitorSerialNumber1","MonitorSerialNumber2"
+
+Just like that to the nth monitor.
+
+
+
+If we have multiple monitors and we don't want to list each of them on the command line. We can save them in a file for example MonitoSerial.txt and the use a variable to store them before running the Get-HPDisplay cmdlet.
+
+It can be saved in the file like this:
+
+
+
+
+Run this on PowerShell:
+$serials = Get-Content "C:\Users\NwPr738\Documents\MonitorSerial.txt"
+Get-HPDisplay -SerialNumber $serials
+
+Like shown in this picture:
+
+
+Get-HPDisplay can also pipe with Select-Object to get you specific information or parameters about your display device. 
+
+Say for example, we are trying to grab just contrast of two monitors connected to our laptop. We can run:
+
+Get-HPDisplay | Select-Object Contrast
+
+
+
+However, if you want to also know what monitor has the contrast, you can pass an additional parameter like DisplayId or SerialNumber to output the ID or Serial number of the monitor like in the image below, where we have one monitor connected.
+
+
+ 
+You can also pass multiple object as a parameter to output their value, like in the image below.
+
+
+
+
+Set-HPDisplay function helps you to modify or set display features for connected displays. It takes an argument of a String, Int32 and a Boolean. 
+
+Set-HPDisplay unlike Get-HPDisplay that grabs the display information without any additional parameter requires a parameter to perform an action. See the image below, it accepts the command but it does not perform any action because no parameter is passed.
+
+
+When a parameter is passed correctly it performs the action and outputs the results, like in the image below. 
+
+
+With Set-HPDisplay you can chain multiple features and pass the value you want the command to set, it sets it and output the results. See example in the image below. 
+
+
+Multiple monitors - What happens when you have multiple monitors connected and you want to change the value of a selected one without impacting the others. We can do that by specifying a unique identifiers.
+The Unique Identifiers are:
+-SerialNumber
+
+Set-HPDisplay  -SerialNumber "CNC4450N6Z" -Brightness 80.  Will only set brightness to 80 only for the monitor with the specified  serial number as seen in the example below. 
+
+
+Set-HPDisplay can also set multiple monitors features by specifying them using the -SerialNumber as a parameter, just like this image where it sets the brightness of the two monitors to 60.
+
+
+ 
+
+Update-HPDisplayFirmware
+Summary
+Updates firmware on connected displays if available
+Syntax
+Update-HPDisplayFirmware [[-SerialNumber] <String[]>] [[-Experience] <String>] [<CommonParameters>]
+Description
+This command updates firmware on connected displays if available. Please note that daisy chained devices are not currently supported.
+Prerequisites:
+• Close all running applications to avoid installation issues.
+• Keep the monitor's power cable connected during the update process.
+• Ensure the monitor is powered ON and displaying active video throughout the update.
+• Avoid putting the computer system into sleep or shutdown mode during the update.
+• Do not connect more than one computer system to the target monitor during the update.
+• The monitor must be connected to the computer using a cable (USB-B to A cable, USB-C to C cable, USB-C to A cable, Thunderbolt cable) for the update to function properly.
+Parameters
+Name	Argument	Description
+SerialNumber	<String[]>	Specifies the serial number(s) of the display(s) to update. If not specified, all connected displays will be updated.
+Experience	<String>	Specifies whether update should run silently or interactively. If not specified, default is silent. If the display does not yet support silent install, an error will be thrown.
+
+Update-HPDisplayFirmware takes parameter -SerialNumber to specify the display that needs update and another parameter -Experience to determine how the update should run, whether silently or interactively as seen in the pictures below.
+
+
+
+
+This CMSL library works on 2020 monitors to Present and the list of monitors can be found here
+
+N/B: Get-HPDisplay does not pull firmware version for certain displays e.g. 738pu
+
+
+For more information on display click here
+
+
+
+
